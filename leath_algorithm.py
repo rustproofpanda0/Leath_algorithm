@@ -116,13 +116,14 @@ class PercCluster():
         if(len(self.current_nearest_neighbors) == 0):
             return 0
         
+        # this is wrong here, as long as there is occupiable cells in the list, there will be round(self.p * len(self.current_nearest_neighbors)) cells converted, 
+        # however, it is possible that when there are occupiable cells, the structure stops growing as every cell has a possibility of being not occupied.
         #random_neighbors = random.sample(self.current_nearest_neighbors,k=round(self.p * len(self.current_nearest_neighbors)))
-        
-        # Randomly and independently occupy the current_nearest_neighbors grids, 
-        # each grid has a likelyhood of self.p for being occupied
+        # my solution, it is generally a process of n independent Bernoulli trials ~ B(n,p),
+        # Randomly and independently occupy the current_nearest_neighbors grids, each grid has a likelyhood of self.p for being occupied
         random_neighbors = random.sample(self.current_nearest_neighbors,
                                          k= sum(np.random.binomial(1, self.p, len(self.current_nearest_neighbors))) )
-
+        
         self.prohibit_nodes(self.current_nearest_neighbors.difference(random_neighbors))
         self.occupy_nodes(random_neighbors)
 
